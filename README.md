@@ -1,2 +1,2 @@
-# Rosal-aMusicPage
+# RosalaMusicPage
 Rosalía音乐网站

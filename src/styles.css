@@ -80,11 +80,27 @@ img {
   inset: 0;
   z-index: -2;
   background:
-    radial-gradient(circle at 70% 15%, color-mix(in srgb, var(--accent) 46%, transparent), transparent 25%),
-    radial-gradient(circle at 20% 18%, color-mix(in srgb, var(--secondary) 34%, transparent), transparent 18%),
-    radial-gradient(circle at 50% 72%, rgba(255, 255, 255, 0.06), transparent 26%);
-  filter: blur(12px);
-  opacity: 0.8;
+    linear-gradient(180deg, color-mix(in srgb, var(--surface) 62%, var(--atmosphere)) 0%, color-mix(in srgb, var(--atmosphere) 54%, var(--shadow-tone)) 100%),
+    radial-gradient(circle at 76% 18%, color-mix(in srgb, var(--light) 70%, transparent), transparent 22%),
+    radial-gradient(circle at 18% 24%, color-mix(in srgb, var(--secondary) 52%, transparent), transparent 20%),
+    radial-gradient(circle at 46% 32%, color-mix(in srgb, var(--accent) 42%, transparent), transparent 18%),
+    radial-gradient(circle at 54% 78%, var(--atmosphere-glow), transparent 28%);
+  filter: saturate(1.14) brightness(1.08);
+  opacity: 0.96;
+  transition:
+    background 700ms ease,
+    opacity 450ms ease,
+    filter 450ms ease;
+}
+
+.backdrop-atmosphere::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--light) 10%, transparent), color-mix(in srgb, var(--shadow-tone) 58%, transparent)),
+    radial-gradient(circle at 50% 20%, color-mix(in srgb, var(--light) 20%, transparent), transparent 22%);
+  backdrop-filter: blur(22px);
 }
 
 .page {
@@ -170,9 +186,9 @@ img {
   inset: 0;
   background:
     linear-gradient(110deg, rgba(2, 4, 8, 0.9) 0%, rgba(2, 4, 8, 0.38) 42%, rgba(2, 4, 8, 0.88) 100%),
-    radial-gradient(circle at 80% 15%, rgba(255, 78, 78, 0.24), transparent 24%),
-    radial-gradient(circle at 20% 20%, rgba(71, 120, 255, 0.22), transparent 24%),
-    url('/lux.jpg') center top / cover no-repeat;
+    radial-gradient(circle at 80% 15%, color-mix(in srgb, var(--hero-accent) 38%, transparent), transparent 24%),
+    radial-gradient(circle at 20% 20%, color-mix(in srgb, var(--hero-secondary) 26%, transparent), transparent 24%),
+    var(--hero-image) center top / cover no-repeat;
   transform-origin: center center;
 }
 
@@ -283,6 +299,10 @@ img {
   min-height: 30rem;
   padding: 2rem;
   overflow: hidden;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--surface) 72%, transparent), color-mix(in srgb, var(--atmosphere) 44%, transparent) 100%),
+    radial-gradient(circle at 30% 20%, color-mix(in srgb, var(--light) 34%, transparent), transparent 22%),
+    radial-gradient(circle at 84% 74%, color-mix(in srgb, var(--secondary) 26%, transparent), transparent 24%);
 }
 
 .album-chapter__visual::before {
@@ -465,7 +485,7 @@ img {
 
 .about-section__image {
   background:
-    linear-gradient(180deg, rgba(2, 4, 8, 0.24), rgba(2, 4, 8, 0.78)),
+    linear-gradient(180deg, rgba(255, 243, 223, 0.08), rgba(2, 4, 8, 0.82)),
     url('/lux.jpg') center / cover no-repeat;
   box-shadow: var(--shadow);
 }
@@ -513,8 +533,11 @@ img {
   position: fixed;
   inset: 0;
   background:
-    linear-gradient(180deg, rgba(4, 7, 12, 0.96), rgba(4, 7, 12, 0.88)),
-    radial-gradient(circle at top right, rgba(212, 40, 48, 0.18), transparent 22%);
+    linear-gradient(180deg, color-mix(in srgb, var(--surface) 70%, var(--atmosphere)) 0%, color-mix(in srgb, var(--shadow-tone) 76%, rgba(5, 8, 14, 0.84)) 100%),
+    radial-gradient(circle at 52% 18%, color-mix(in srgb, var(--light) 42%, transparent), transparent 24%),
+    radial-gradient(circle at 82% 14%, color-mix(in srgb, var(--accent) 48%, transparent), transparent 22%),
+    radial-gradient(circle at 16% 18%, color-mix(in srgb, var(--secondary) 38%, transparent), transparent 20%),
+    radial-gradient(circle at 48% 82%, var(--atmosphere-glow), transparent 28%);
 }
 
 .album-overlay__inner {
@@ -694,8 +717,9 @@ input[type='range']::-webkit-slider-thumb {
   width: min(100%, 24rem);
   aspect-ratio: 1;
   background:
-    linear-gradient(135deg, color-mix(in srgb, var(--accent) 30%, #0d1221), rgba(4, 6, 10, 0.95)),
-    radial-gradient(circle at 24% 18%, color-mix(in srgb, var(--secondary) 32%, transparent), transparent 22%);
+    linear-gradient(135deg, color-mix(in srgb, var(--surface) 74%, var(--accent)), color-mix(in srgb, var(--shadow-tone) 76%, #0d1221)),
+    radial-gradient(circle at 24% 18%, color-mix(in srgb, var(--light) 54%, transparent), transparent 22%),
+    radial-gradient(circle at 78% 72%, color-mix(in srgb, var(--secondary) 34%, transparent), transparent 24%);
   background-position: center;
   background-size: cover;
   box-shadow: var(--shadow);
@@ -726,8 +750,8 @@ input[type='range']::-webkit-slider-thumb {
   gap: 0.35rem;
   padding: 1.2rem;
   background:
-    linear-gradient(180deg, transparent 32%, rgba(4, 7, 12, 0.92) 100%),
-    linear-gradient(135deg, color-mix(in srgb, var(--accent) 30%, transparent), transparent);
+    linear-gradient(180deg, transparent 32%, color-mix(in srgb, var(--shadow-tone) 86%, rgba(4, 7, 12, 0.92)) 100%),
+    linear-gradient(135deg, color-mix(in srgb, var(--surface) 62%, var(--accent)), transparent);
 }
 
 .artwork-frame__fallback span,

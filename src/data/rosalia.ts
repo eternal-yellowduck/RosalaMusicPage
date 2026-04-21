@@ -7,6 +7,7 @@ export type Track = {
   previewUrl?: string
   coverUrl?: string
   searchTerm?: string
+  appleMusicAlbumId?: string
 }
 
 export type Album = {
@@ -21,6 +22,15 @@ export type Album = {
   paletteLabel: string
   accent: string
   secondaryAccent: string
+  atmosphere: string
+  atmosphereGlow: string
+  surface: string
+  light: string
+  shadow: string
+  textContrast: string
+  appleMusicAlbumId: string
+  appleMusicCompleteWorksId?: string
+  visualDirection: string
   heroImageUrl?: string
   coverUrl?: string
   layoutPreset: 'left' | 'right' | 'stacked'
@@ -28,40 +38,48 @@ export type Album = {
   tracks: Track[]
 }
 
-const artist = 'Rosalía'
+const artist = 'ROSALIA'
 
 export const rosaliaAlbums: Album[] = [
   {
     id: 'los-angeles',
     slug: 'los-angeles',
-    title: 'Los Ángeles',
+    title: 'Los Angeles',
     year: '2017',
     era: 'Ritual Origin',
-    introTag: '祈祷 / Ash / Acoustic gravity',
+    introTag: 'Prayer / ash / acoustic gravity',
     chapterTitle: 'The archive of shadows',
     description:
-      '以极简 flamenco 与冷冽留白开场，像在空旷教堂里听到一条声线逐渐靠近。网站里这一章偏向神圣、静默、黑与象牙白的对峙。',
-    paletteLabel: 'Ivory, coal, chapel blue',
-    accent: '#e6dfd1',
-    secondaryAccent: '#5878d9',
-    heroImageUrl: '/lux.jpg',
+      '像一间空旷石室里的低声吟唱。吉他被压得很近，呼吸、停顿和嗓音纹理都被放到最前面，让悲伤显得既古老又亲密。',
+    paletteLabel: 'Ivory, ash, muted chapel blue',
+    accent: '#efe4d1',
+    secondaryAccent: '#7f95c9',
+    atmosphere: '#d8d2c8',
+    atmosphereGlow: 'rgba(148, 162, 203, 0.34)',
+    surface: '#f0e7d8',
+    light: '#fff8ec',
+    shadow: '#202331',
+    textContrast: '#171a20',
+    appleMusicAlbumId: '1440865143',
+    visualDirection:
+      'Pale devotional austerity, close acoustic space, ash-colored silence, and old-world portrait stillness.',
     layoutPreset: 'left',
     visualNotes: [
       'Sparse acoustics, almost liturgical pauses',
       'Portrait lighting with devotional stillness',
-      'The beginning of Rosalía as ritual author',
+      'An origin story written as ritual instead of debut spectacle',
     ],
     tracks: [
       {
         id: 'los-angeles-si-tu-supieras',
-        title: 'Si tú supieras compañero',
+        title: 'Si tu supieras companero',
         artist,
         duration: '3:15',
         albumId: 'los-angeles',
         searchTerm: 'Rosalia Si tu supieras companero',
       },
       {
-        id: 'los-angeles-de-plate',
+        id: 'los-angeles-de-plata',
         title: 'De Plata',
         artist,
         duration: '3:28',
@@ -78,7 +96,7 @@ export const rosaliaAlbums: Album[] = [
       },
       {
         id: 'los-angeles-dia-14',
-        title: 'Día 14 de abril',
+        title: 'Dia 14 de Abril',
         artist,
         duration: '3:22',
         albumId: 'los-angeles',
@@ -89,22 +107,30 @@ export const rosaliaAlbums: Album[] = [
   {
     id: 'el-mal-querer',
     slug: 'el-mal-querer',
-    title: 'El Mal Querer',
+    title: 'EL MAL QUERER',
     year: '2018',
     era: 'Chapter Opera',
-    introTag: 'Chapter / Blood / Gold leaf',
+    introTag: 'Manuscript / crimson / gold leaf',
     chapterTitle: 'Love staged as myth',
     description:
-      '这一章更像一部被切成章节的戏剧：权力、欲望、嫉妒、献祭感并置。视觉需要像金箔圣像和现代时尚摄影碰撞后的结果，危险而华丽。',
-    paletteLabel: 'Crimson, antique gold, night lacquer',
-    accent: '#d42830',
-    secondaryAccent: '#c7a563',
-    heroImageUrl: '/lux.jpg',
+      '这不是温柔情歌，而是一部关于占有、凝视与失控的明亮戏剧。鼓点像命令，拍手像警报，金色和猩红把爱情推成了带有圣像感的章回故事。',
+    paletteLabel: 'Ivory, illuminated gold, ceremonial crimson',
+    accent: '#cf1f2c',
+    secondaryAccent: '#d8aa52',
+    atmosphere: '#f0d8a6',
+    atmosphereGlow: 'rgba(255, 229, 160, 0.55)',
+    surface: '#f7ead0',
+    light: '#fff4d8',
+    shadow: '#4b1415',
+    textContrast: '#23100d',
+    appleMusicAlbumId: '1436309944',
+    visualDirection:
+      'Illuminated manuscript energy, warm ivory light, medieval gold, crimson warning signs, and chapter-opera drama.',
     layoutPreset: 'right',
     visualNotes: [
       'Narrative broken into chapter-like tableaux',
       'Flamenco handclaps cut through glossy modern production',
-      'Red as wound, gold as halo, black as control',
+      'Red as wound, gold as halo, ivory as sacred page',
     ],
     tracks: [
       {
@@ -117,14 +143,14 @@ export const rosaliaAlbums: Album[] = [
       },
       {
         id: 'el-mal-querer-pienso-en-tu-mira',
-        title: 'Pienso en tu mirá',
+        title: 'Pienso en tu mira',
         artist,
         duration: '3:13',
         albumId: 'el-mal-querer',
         searchTerm: 'Rosalia Pienso en tu mira',
       },
       {
-        id: 'el-mal-querer-bagre',
+        id: 'el-mal-querer-bagdad',
         title: 'Bagdad',
         artist,
         duration: '2:56',
@@ -147,14 +173,22 @@ export const rosaliaAlbums: Album[] = [
     title: 'MOTOMAMI',
     year: '2022',
     era: 'Velocity Manifesto',
-    introTag: 'Chrome / engine / body language',
+    introTag: 'Chrome / white space / red typography',
     chapterTitle: 'A speed ritual in public',
     description:
-      '把车速、互联网、身体、脆弱和夸张表演揉成一个超高速剪辑现场。版面应该更锋利、更实验，也更有杂志封面和 runway backroom 的力量。',
-    paletteLabel: 'Chrome blue, signal red, carbon black',
-    accent: '#316cff',
-    secondaryAccent: '#ff4438',
-    heroImageUrl: '/lux.jpg',
+      '这里的 Rosalía 更像一台不断变形的引擎。她把挑衅、幽默、脆弱和自我神话焊在一起，让每一首歌都像急刹、甩尾、再突然静止。',
+    paletteLabel: 'Flash white, chrome blue, signal red',
+    accent: '#f23c2f',
+    secondaryAccent: '#2e6dff',
+    atmosphere: '#eceef2',
+    atmosphereGlow: 'rgba(255, 70, 52, 0.34)',
+    surface: '#f5f5f2',
+    light: '#ffffff',
+    shadow: '#111820',
+    textContrast: '#121419',
+    appleMusicAlbumId: '1607918350',
+    visualDirection:
+      'Stark white negative space, chrome reflections, red lettering, flash-lit editorial tension, and motorcycle speed.',
     layoutPreset: 'stacked',
     visualNotes: [
       'Hyper-pop velocity balanced by intimate voice notes',
@@ -164,7 +198,7 @@ export const rosaliaAlbums: Album[] = [
     tracks: [
       {
         id: 'motomami-saoko',
-        title: 'Saoko',
+        title: 'SAOKO',
         artist,
         duration: '2:18',
         albumId: 'motomami',
@@ -196,11 +230,98 @@ export const rosaliaAlbums: Album[] = [
       },
     ],
   },
+  {
+    id: 'lux',
+    slug: 'lux',
+    title: 'LUX',
+    year: '2025',
+    era: 'Sacred Maximalism',
+    introTag: 'Blue sky / veil / operatic light',
+    chapterTitle: 'A body held inside radiance',
+    description:
+      'LUX 不是夜店暗面，而是一场明亮、宏大、近乎歌剧化的圣光仪式。蓝天、白纱、银色、金色和宗教感并置，让她的声音像从空中落下的建筑。',
+    paletteLabel: 'Sky blue, veil white, silver, sacred gold',
+    accent: '#f4efe4',
+    secondaryAccent: '#75a8ff',
+    atmosphere: '#b9d4f6',
+    atmosphereGlow: 'rgba(255, 245, 211, 0.62)',
+    surface: '#f8f4ea',
+    light: '#ffffff',
+    shadow: '#32455f',
+    textContrast: '#152136',
+    appleMusicAlbumId: '1848167516',
+    appleMusicCompleteWorksId: '1893474283',
+    visualDirection:
+      'Bright sacred blue and white maximalism, veil-like softness, silver highlights, gold devotional glow, and operatic scale.',
+    heroImageUrl: '/lux.jpg',
+    layoutPreset: 'right',
+    visualNotes: [
+      'Luminous, spiritual, and operatic rather than nightclub-dark',
+      'Blue-sky white veil imagery with silver and gold devotional accents',
+      'A maximal sacred pop world where voice, couture, and ritual merge',
+    ],
+    tracks: [
+      {
+        id: 'lux-berghain',
+        title: 'Berghain',
+        artist,
+        duration: '3:41',
+        albumId: 'lux',
+        searchTerm: 'ROSALIA Berghain Lux',
+        appleMusicAlbumId: '1848167516',
+      },
+      {
+        id: 'lux-la-perla',
+        title: 'La Perla',
+        artist,
+        duration: '3:19',
+        albumId: 'lux',
+        searchTerm: 'ROSALIA La Perla Lux',
+        appleMusicAlbumId: '1848167516',
+      },
+      {
+        id: 'lux-mio-cristo-piange-diamanti',
+        title: 'Mio Cristo Piange Diamanti',
+        artist,
+        duration: '4:12',
+        albumId: 'lux',
+        searchTerm: 'ROSALIA Mio Cristo Piange Diamanti Lux',
+        appleMusicAlbumId: '1848167516',
+      },
+      {
+        id: 'lux-focuranni',
+        title: "Focu 'Ranni",
+        artist,
+        duration: '3:06',
+        albumId: 'lux',
+        searchTerm: "ROSALIA Focu Ranni Lux",
+        appleMusicAlbumId: '1893474283',
+      },
+      {
+        id: 'lux-novia-robot',
+        title: 'Novia Robot',
+        artist,
+        duration: '3:27',
+        albumId: 'lux',
+        searchTerm: 'ROSALIA Novia Robot Lux',
+        appleMusicAlbumId: '1893474283',
+      },
+      {
+        id: 'lux-jeanne',
+        title: 'Jeanne',
+        artist,
+        duration: '4:01',
+        albumId: 'lux',
+        searchTerm: 'ROSALIA Jeanne Lux',
+        appleMusicAlbumId: '1893474283',
+      },
+    ],
+  },
 ]
 
 export const homeManifesto = [
   'Not a landing page. A chamber for sound, fashion, and iconography.',
-  '不是功能模块拼接，而是以专辑章节、速度、情绪和质感来组织浏览。',
+  '不是信息介绍页，而是一座会随专辑情绪与速度切换气压的听觉展厅。',
   'Every section behaves like an exhibit label, a sleeve note, or a stage entrance.',
 ]
 

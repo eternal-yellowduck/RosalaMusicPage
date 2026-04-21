@@ -12,11 +12,10 @@ import {
   useLocation,
   useMatch,
   useNavigate,
-  useParams,
 } from 'react-router-dom'
 import { useEffect, useMemo, useState, type CSSProperties } from 'react'
 import { PlayerProvider, usePlayer } from './lib/player'
-import { resolveAlbumArtwork } from './lib/media'
+import { lookupAlbumMedia } from './lib/media'
 import { homeManifesto, rosaliaAlbums, type Album, type Track } from './data/rosalia'
 
 function App() {
@@ -26,7 +25,7 @@ function App() {
     let ignore = false
 
     async function enrichArtwork() {
-      const patches = await Promise.all(rosaliaAlbums.map((album) => resolveAlbumArtwork(album)))
+      const patches = await Promise.all(rosaliaAlbums.map((album) => lookupAlbumMedia(album)))
       if (ignore) return
 
       setAlbums(
@@ -56,10 +55,16 @@ function App() {
 function Shell({ albums }: { albums: Album[] }) {
   const location = useLocation()
   const match = useMatch('/album/:slug')
+  const { currentAlbum } = usePlayer()
+  const [spotlightAlbumId, setSpotlightAlbumId] = useState<string | null>(null)
   const selectedAlbum = useMemo(
     () => albums.find((album) => album.slug === match?.params.slug),
     [albums, match?.params.slug],
   )
+  const atmosphereAlbum = selectedAlbum
+    ?? albums.find((album) => album.id === spotlightAlbumId)
+    ?? currentAlbum
+    ?? albums[0]
 
   useEffect(() => {
     document.documentElement.style.scrollBehavior = 'smooth'
@@ -68,19 +73,19 @@ function Shell({ albums }: { albums: Album[] }) {
     }
   }, [])
 
-  useEffect(() => {
-    if (!location.pathname.startsWith('/album/')) {
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    }
-  }, [location.pathname])
-
   return (
     <div className="app-shell">
-      <BackdropAtmosphere albums={albums} />
+      <BackdropAtmosphere album={atmosphereAlbum} />
       <StickyNav />
       <Routes>
-        <Route path="/" element={<HomePage albums={albums} />} />
-        <Route path="/album/:slug" element={<HomePage albums={albums} />} />
+        <Route
+          path="/"
+          element={<HomePage albums={albums} onSpotlightChange={setSpotlightAlbumId} />}
+        />
+        <Route
+          path="/album/:slug"
+          element={<HomePage albums={albums} onSpotlightChange={setSpotlightAlbumId} />}
+        />
         <Route path="/about" element={<AboutPage albums={albums} />} />
       </Routes>
       <AnimatePresence>
@@ -134,24 +139,37 @@ function StickyNav() {
   )
 }
 
-function HomePage({ albums }: { albums: Album[] }) {
+function HomePage({
+  albums,
+  onSpotlightChange,
+}: {
+  albums: Album[]
+  onSpotlightChange: (albumId: string | null) => void
+}) {
   return (
     <main className="page page--home">
-      <HeroPoster />
-      <AlbumExhibition albums={albums} />
+      <HeroPoster album={albums[0]} />
+      <AlbumExhibition albums={albums} onSpotlightChange={onSpotlightChange} />
       <MusicAxis albums={albums} />
       <AboutSection />
     </main>
   )
 }
 
-function HeroPoster() {
+function HeroPoster({ album }: { album: Album }) {
   const reduceMotion = useReducedMotion()
 
   return (
     <section className="hero-poster" id="hero">
       <motion.div
         className="hero-poster__image"
+        style={
+          {
+            '--hero-accent': album.accent,
+            '--hero-secondary': album.secondaryAccent,
+            '--hero-image': "url('/lux.jpg')",
+          } as CSSProperties
+        }
         initial={reduceMotion ? undefined : { opacity: 0, scale: 1.06 }}
         animate={reduceMotion ? undefined : { opacity: 1, scale: 1 }}
         transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
@@ -171,14 +189,20 @@ function HeroPoster() {
         </div>
       </motion.div>
       <div className="hero-poster__footer">
-        <span>EL MAL QUERER / MOTOMAMI / LUX</span>
-        <span>Editorial music experience</span>
+        <span>{album.title} / {album.era}</span>
+        <span>{album.chapterTitle}</span>
       </div>
     </section>
   )
 }
 
-function AlbumExhibition({ albums }: { albums: Album[] }) {
+function AlbumExhibition({
+  albums,
+  onSpotlightChange,
+}: {
+  albums: Album[]
+  onSpotlightChange: (albumId: string | null) => void
+}) {
   return (
     <section className="album-exhibition" id="albums">
       <div className="section-heading">
@@ -188,7 +212,12 @@ function AlbumExhibition({ albums }: { albums: Album[] }) {
       <LayoutGroup>
         <div className="album-exhibition__stack">
           {albums.map((album, index) => (
-            <AlbumChapter album={album} index={index} key={album.id} />
+            <AlbumChapter
+              album={album}
+              index={index}
+              key={album.id}
+              onSpotlightChange={onSpotlightChange}
+            />
           ))}
         </div>
       </LayoutGroup>
@@ -196,7 +225,15 @@ function AlbumExhibition({ albums }: { albums: Album[] }) {
   )
 }
 
-function AlbumChapter({ album, index }: { album: Album; index: number }) {
+function AlbumChapter({
+  album,
+  index,
+  onSpotlightChange,
+}: {
+  album: Album
+  index: number
+  onSpotlightChange: (albumId: string | null) => void
+}) {
   const navigate = useNavigate()
   const { playAlbum } = usePlayer()
   const reduceMotion = useReducedMotion()
@@ -211,7 +248,8 @@ function AlbumChapter({ album, index }: { album: Album; index: number }) {
       className={`album-chapter album-chapter--${album.layoutPreset}`}
       initial={reduceMotion ? undefined : { opacity: 0, y: 56 }}
       whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-15%' }}
+      onViewportEnter={() => onSpotlightChange(album.id)}
+      viewport={{ once: false, amount: 0.5 }}
       transition={{ duration: 0.9, delay: index * 0.08 }}
     >
       <button
@@ -221,9 +259,16 @@ function AlbumChapter({ album, index }: { album: Album; index: number }) {
           {
             '--accent': album.accent,
             '--secondary': album.secondaryAccent,
+            '--atmosphere': album.atmosphere,
+            '--surface': album.surface,
+            '--light': album.light,
+            '--shadow-tone': album.shadow,
+            '--text-contrast': album.textContrast,
           } as CSSProperties
         }
         onClick={() => enterAlbum()}
+        onMouseEnter={() => onSpotlightChange(album.id)}
+        onFocus={() => onSpotlightChange(album.id)}
       >
         <ArtworkFrame album={album} />
         <span className="album-chapter__hover">Enter playback ritual</span>
@@ -277,8 +322,8 @@ function MusicAxis({ albums }: { albums: Album[] }) {
           pose and the velocity of a bike cutting through neon.
         </p>
         <p>
-          这里的“Music”区不是表格式曲库，而更像展览里的听音线索，把声音、气味、颜色和身体动作
-          编排成一条连续的轨道。
+          她的作品里总有两种力量并行: 一种向内，像祈祷、独白、抚摸；另一种向外，像机车、镁光灯、
+          身体突然向前的冲刺。
         </p>
       </div>
     </section>
@@ -320,11 +365,11 @@ function AboutSection() {
             Built as a digital exhibition: image-led, typography-led, and paced like a setlist.
           </p>
           <p>
-            它拒绝 SaaS 式功能块，也不把专辑做成一排统一卡片，而是把每张作品当成进入另一个视觉
-            宇宙的入口。
+            从《Los Ángeles》的冷火，到《El Mal Querer》的猩红戏剧，再到《MOTOMAMI》的金属高速，
+            每一章都像 Rosalía 把自己的身体和声音投向另一种形态。
           </p>
           <p>
-            The player stays with you at every moment, like a low-lit mixing desk at the edge of the room.
+            而 LUX 像一束从暗处升起的白光，让她的锋利暂时披上柔和外衣，却没有失去任何控制力。
           </p>
         </div>
       </div>
@@ -345,10 +390,11 @@ function AboutPage({ albums }: { albums: Album[] }) {
             <p>
               This site treats the discography as exhibition architecture: sacred stillness in{' '}
               <em>Los Ángeles</em>, mythic chapter drama in <em>El Mal Querer</em>, then chrome-speed
-              confrontation in <em>MOTOMAMI</em>.
+              confrontation in <em>MOTOMAMI</em>, and finally the luminous drift of <em>LUX</em>.
             </p>
             <p>
-              文案刻意克制，把空间让给图像、节奏、切换和底部播放器，让浏览更像走进一个音乐装置。
+              她的世界观并不是单一风格，而是在神圣、危险、幽默、肉身感与高定时尚之间反复切换，
+              像一位同时理解祭坛与 runway 的表演者。
             </p>
           </div>
           <div className="about-page-hero__inventory">
@@ -398,7 +444,21 @@ function AlbumOverlayPlayer({ album }: { album: Album }) {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.35 }}
     >
-      <div className="album-overlay__backdrop" />
+      <div
+        className="album-overlay__backdrop"
+        style={
+          {
+            '--accent': album.accent,
+            '--secondary': album.secondaryAccent,
+            '--atmosphere': album.atmosphere,
+            '--atmosphere-glow': album.atmosphereGlow,
+            '--surface': album.surface,
+            '--light': album.light,
+            '--shadow-tone': album.shadow,
+            '--text-contrast': album.textContrast,
+          } as CSSProperties
+        }
+      />
       <div className="album-overlay__inner">
         <button type="button" className="album-overlay__close" onClick={() => navigate('/')}>
           Close archive
@@ -527,15 +587,20 @@ function GlobalPlayerBar({ albums }: { albums: Album[] }) {
   )
 }
 
-function BackdropAtmosphere({ albums }: { albums: Album[] }) {
-  const featured = albums[1] ?? albums[0]
+function BackdropAtmosphere({ album }: { album: Album }) {
   return (
     <div
       className="backdrop-atmosphere"
       style={
         {
-          '--accent': featured.accent,
-          '--secondary': featured.secondaryAccent,
+          '--accent': album.accent,
+          '--secondary': album.secondaryAccent,
+          '--atmosphere': album.atmosphere,
+          '--atmosphere-glow': album.atmosphereGlow,
+          '--surface': album.surface,
+          '--light': album.light,
+          '--shadow-tone': album.shadow,
+          '--text-contrast': album.textContrast,
         } as CSSProperties
       }
     />
@@ -551,7 +616,7 @@ function ArtworkFrame({
   artworkUrl?: string
   compact?: boolean
 }) {
-  const backgroundImage = artworkUrl || album.coverUrl || album.heroImageUrl
+  const backgroundImage = artworkUrl || album.coverUrl
   return (
     <div
       className={`artwork-frame ${compact ? 'artwork-frame--compact' : ''}`}
@@ -559,6 +624,10 @@ function ArtworkFrame({
         {
           '--accent': album.accent,
           '--secondary': album.secondaryAccent,
+          '--surface': album.surface,
+          '--light': album.light,
+          '--shadow-tone': album.shadow,
+          '--text-contrast': album.textContrast,
           backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined,
         } as CSSProperties
       }

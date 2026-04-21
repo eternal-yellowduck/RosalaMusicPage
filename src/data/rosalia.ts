@@ -38,6 +38,24 @@ export type Album = {
   tracks: Track[]
 }
 
+export type RosaliaEra = {
+  id: string
+  title: string
+  years: string
+  anchorAlbum: string
+  visualLanguage: string
+  soundLanguage: string
+  bodyLanguage: string
+  fashionCue: string
+  summary: string
+  keywords: string[]
+  imageUrl?: string
+  imageAlt: string
+  mediaHref: string
+  mediaLabel: string
+  linkedAlbumId?: string
+}
+
 const artist = 'ROSALIA'
 
 export const rosaliaAlbums: Album[] = [
@@ -323,6 +341,99 @@ export const homeManifesto = [
   'Not a landing page. A chamber for sound, fashion, and iconography.',
   '不是信息介绍页，而是一座会随专辑情绪与速度切换气压的听觉展厅。',
   'Every section behaves like an exhibit label, a sleeve note, or a stage entrance.',
+]
+
+export const rosaliaEras: RosaliaEra[] = [
+  {
+    id: 'apprenticeship',
+    title: 'Flamenco Apprenticeship',
+    years: 'Pre-2017',
+    anchorAlbum: 'Before the archive',
+    visualLanguage: 'Rehearsal rooms, dark hair, bare voice, hands as percussion, discipline before iconography.',
+    soundLanguage: 'Flamenco study, Catalan and Spanish roots, vocal control, live tension, and the shadow of Camaron.',
+    bodyLanguage: 'Stillness first: the body listens before it performs, and the gesture is trained rather than decorative.',
+    fashionCue: 'Black rehearsal minimalism, no excess styling, the musician before the star image.',
+    summary:
+      '在成名前的阶段，Rosalia 的核心不是流行包装，而是训练、聆听和身体记忆。她先把声音练成一种可以承受空白的力量，再进入专辑叙事。',
+    keywords: ['training', 'flamenco', 'voice', 'discipline'],
+    imageAlt: 'Rosalia and Raul Refree live flamenco performance in 2017',
+    imageUrl: '/eras/flamenco-apprenticeship.jpg',
+    mediaHref: 'https://www.youtube.com/results?search_query=Rosalia+De+Plata+directo+Sevilla',
+    mediaLabel: 'Watch early live archive',
+    linkedAlbumId: 'los-angeles',
+  },
+  {
+    id: 'los-angeles-era',
+    title: 'Los Angeles',
+    years: '2017',
+    anchorAlbum: 'Los Angeles',
+    visualLanguage: 'Ash, ivory, chapel blue, old portrait light, a devotional room with almost no ornament.',
+    soundLanguage: 'Sparse guitar and grief-led vocal phrasing; silence behaves like an instrument.',
+    bodyLanguage: 'Contained, frontal, solemn; a singer holding the room without needing spectacle.',
+    fashionCue: 'Pale skin light, austere fabric, devotional restraint, the voice placed before the outfit.',
+    summary:
+      '《Los Angeles》像一间只剩吉他、呼吸和哀伤回声的房间。它让 Rosalia 的声音先成为空间，再成为形象。',
+    keywords: ['grief', 'guitar', 'silence', 'devotion'],
+    imageAlt: 'Rosalia 2017 acoustic live close-up',
+    imageUrl: '/eras/los-angeles-live.jpg',
+    mediaHref: 'https://www.youtube.com/results?search_query=Rosalia+Los+Angeles+live+performance',
+    mediaLabel: 'Open acoustic visual reference',
+    linkedAlbumId: 'los-angeles',
+  },
+  {
+    id: 'el-mal-querer-era',
+    title: 'EL MAL QUERER',
+    years: '2018-2019',
+    anchorAlbum: 'EL MAL QUERER',
+    visualLanguage: 'Illuminated manuscript, crimson warning, medieval gold, chapter titles, sacred page drama.',
+    soundLanguage: 'Flamenco architecture colliding with pop production, handclaps, bass pressure, and conceptual sequencing.',
+    bodyLanguage: 'Hands become symbols; the gaze becomes narrative; jealousy and control are staged like ritual.',
+    fashionCue: 'Gold leaf, red fabric, sculptural hair, and saint-like framing with modern editorial sharpness.',
+    summary:
+      '这一阶段把爱情写成章回神话。她不再只是唱情绪，而是把嫉妒、权力和凝视做成一套明亮而危险的视觉语法。',
+    keywords: ['chapters', 'gold', 'crimson', 'myth'],
+    imageAlt: 'Rosalia EL MAL QUERER performance and tour visual archive',
+    imageUrl: '/eras/el-mal-querer-live.jpg',
+    mediaHref: 'https://www.youtube.com/results?search_query=Rosalia+El+Mal+Querer+Tour+Live+in+Paris',
+    mediaLabel: 'Watch El Mal Querer live',
+    linkedAlbumId: 'el-mal-querer',
+  },
+  {
+    id: 'motomami-era',
+    title: 'MOTOMAMI',
+    years: '2022-2023',
+    anchorAlbum: 'MOTOMAMI',
+    visualLanguage: 'Flash white, chrome, red typography, motorcycles, mirrors, exposed skin, compression and speed.',
+    soundLanguage: 'Reggaeton, bachata, electronic pop, hyper-fragmented vocals, sudden softness, and abrupt cuts.',
+    bodyLanguage: 'A body in motion: acceleration, flex, joke, confession, impact, then a clean stop.',
+    fashionCue: 'Helmet energy, white negative space, red lettering, chrome surfaces, runway mixed with garage heat.',
+    summary:
+      '《MOTOMAMI》让 Rosalia 变成高速拼贴。她把机车、欲望、幽默和脆弱放进同一个身体里，像每首歌都在换挡。',
+    keywords: ['speed', 'chrome', 'red', 'body'],
+    imageAlt: 'Rosalia MOTOMAMI World Tour performance visual',
+    imageUrl: '/eras/motomami-tour.png',
+    mediaHref: 'https://www.youtube.com/results?search_query=Rosalia+Motomami+World+Tour+live',
+    mediaLabel: 'Watch MOTOMAMI tour',
+    linkedAlbumId: 'motomami',
+  },
+  {
+    id: 'lux-era',
+    title: 'LUX',
+    years: '2025-2026',
+    anchorAlbum: 'LUX',
+    visualLanguage: 'Blue sky, veil white, silver light, sacred gold, couture volume, and operatic radiance.',
+    soundLanguage: 'Orchestral and multilingual pop maximalism, spiritual imagery, female saints, mysticism, and transformation.',
+    bodyLanguage: 'The body is less machine and more apparition: lifted, veiled, ceremonial, and held inside light.',
+    fashionCue: 'White veil, sculptural couture, luminous skin, ecclesiastical blue, silver and gold devotional accents.',
+    summary:
+      'LUX 把她的世界推向圣光与歌剧感。这里的力量不靠黑暗制造压迫，而是在蓝白色的明亮空间里显得更高、更远、更像仪式。',
+    keywords: ['sacred', 'blue', 'veil', 'orchestral'],
+    imageAlt: 'Rosalia LUX Berghain live performance reference',
+    imageUrl: '/eras/lux-visual.jpg',
+    mediaHref: 'https://www.youtube.com/watch?v=7fyufPkXLbs',
+    mediaLabel: 'Watch LUX visual archive',
+    linkedAlbumId: 'lux',
+  },
 ]
 
 export const allTracks = rosaliaAlbums.flatMap((album) => album.tracks)

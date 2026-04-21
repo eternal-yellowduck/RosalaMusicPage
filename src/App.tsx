@@ -16,7 +16,14 @@ import {
 import { useEffect, useMemo, useState, type CSSProperties } from 'react'
 import { PlayerProvider, usePlayer } from './lib/player'
 import { lookupAlbumMedia } from './lib/media'
-import { homeManifesto, rosaliaAlbums, type Album, type Track } from './data/rosalia'
+import {
+  homeManifesto,
+  rosaliaAlbums,
+  rosaliaEras,
+  type Album,
+  type RosaliaEra,
+  type Track,
+} from './data/rosalia'
 
 function App() {
   const [albums, setAlbums] = useState(rosaliaAlbums)
@@ -86,6 +93,10 @@ function Shell({ albums }: { albums: Album[] }) {
           path="/album/:slug"
           element={<HomePage albums={albums} onSpotlightChange={setSpotlightAlbumId} />}
         />
+        <Route
+          path="/eras"
+          element={<ErasPage albums={albums} onSpotlightChange={setSpotlightAlbumId} />}
+        />
         <Route path="/about" element={<AboutPage albums={albums} />} />
       </Routes>
       <AnimatePresence>
@@ -133,6 +144,7 @@ function StickyNav() {
         <button type="button" onClick={() => goToSection('music')}>
           Music
         </button>
+        <NavLink to="/eras">Eras</NavLink>
         <NavLink to="/about">About</NavLink>
       </nav>
     </header>
@@ -412,6 +424,151 @@ function AboutPage({ albums }: { albums: Album[] }) {
   )
 }
 
+function ErasPage({
+  albums,
+  onSpotlightChange,
+}: {
+  albums: Album[]
+  onSpotlightChange: (albumId: string | null) => void
+}) {
+  const primaryAlbum = albums.find((album) => album.id === 'lux') ?? albums[0]
+
+  useEffect(() => {
+    onSpotlightChange(primaryAlbum.id)
+  }, [onSpotlightChange, primaryAlbum.id])
+
+  return (
+    <main className="page eras-page">
+      <section className="eras-hero">
+        <motion.div
+          className="eras-hero__title"
+          initial={{ opacity: 0, y: 32 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.85 }}
+        >
+          <span>Era Index</span>
+          <h1>ERAS</h1>
+        </motion.div>
+        <div className="eras-hero__rail" aria-label="Era years">
+          {rosaliaEras.map((era) => (
+            <a href={`#${era.id}`} key={era.id}>
+              {era.years}
+            </a>
+          ))}
+        </div>
+        <div className="eras-hero__image">
+          <div />
+        </div>
+        <p className="eras-hero__copy">
+          A career arc in five rooms: training, grief, myth, speed, and sacred light.
+        </p>
+      </section>
+
+      <section className="era-timeline" aria-label="Rosalia eras">
+        {rosaliaEras.map((era, index) => (
+          <EraPanel
+            albums={albums}
+            era={era}
+            index={index}
+            key={era.id}
+            onSpotlightChange={onSpotlightChange}
+          />
+        ))}
+      </section>
+    </main>
+  )
+}
+
+function EraPanel({
+  albums,
+  era,
+  index,
+  onSpotlightChange,
+}: {
+  albums: Album[]
+  era: RosaliaEra
+  index: number
+  onSpotlightChange: (albumId: string | null) => void
+}) {
+  const linkedAlbum = albums.find((album) => album.id === era.linkedAlbumId) ?? albums[0]
+  const reduceMotion = useReducedMotion()
+
+  function spotlightEra() {
+    if (linkedAlbum) onSpotlightChange(linkedAlbum.id)
+  }
+
+  return (
+    <motion.article
+      className={`era-panel ${index % 2 === 1 ? 'era-panel--reverse' : ''}`}
+      id={era.id}
+      style={albumVisualVars(linkedAlbum)}
+      initial={reduceMotion ? undefined : { opacity: 0, y: 54 }}
+      whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+      viewport={{ once: false, amount: 0.42 }}
+      transition={{ duration: 0.8, delay: index * 0.04 }}
+      onViewportEnter={spotlightEra}
+      onMouseEnter={spotlightEra}
+      onFocus={spotlightEra}
+    >
+      <a
+        className="era-panel__visual"
+        href={era.mediaHref}
+        target="_blank"
+        rel="noreferrer"
+        aria-label={`${era.mediaLabel}: ${era.title}`}
+      >
+        <div className="era-panel__media">
+          {era.imageUrl ? (
+            <img
+              src={era.imageUrl}
+              alt={era.imageAlt}
+              loading="lazy"
+              onError={(event) => {
+                event.currentTarget.hidden = true
+              }}
+            />
+          ) : null}
+          <div className="era-panel__media-fallback">
+            <span>{era.years}</span>
+            <strong>{era.title}</strong>
+          </div>
+        </div>
+        <small>Video / Live Archive</small>
+        <span>{era.mediaLabel}</span>
+      </a>
+
+      <div className="era-panel__content">
+        <div className="era-panel__index">
+          <span>{String(index + 1).padStart(2, '0')}</span>
+          <strong>{era.years}</strong>
+        </div>
+        <p className="era-panel__anchor">{era.anchorAlbum}</p>
+        <h2>{era.title}</h2>
+        <p className="era-panel__summary">{era.summary}</p>
+        <div className="era-labels">
+          <div>
+            <span>Sound</span>
+            <p>{era.soundLanguage}</p>
+          </div>
+          <div>
+            <span>Body</span>
+            <p>{era.bodyLanguage}</p>
+          </div>
+          <div>
+            <span>Image</span>
+            <p>{era.visualLanguage}</p>
+          </div>
+        </div>
+        <div className="era-keywords" aria-label={`${era.title} keywords`}>
+          {era.keywords.map((keyword) => (
+            <span key={keyword}>{keyword}</span>
+          ))}
+        </div>
+      </div>
+    </motion.article>
+  )
+}
+
 function AlbumOverlayPlayer({ album }: { album: Album }) {
   const navigate = useNavigate()
   const {
@@ -587,22 +744,24 @@ function GlobalPlayerBar({ albums }: { albums: Album[] }) {
   )
 }
 
+function albumVisualVars(album: Album): CSSProperties {
+  return {
+    '--accent': album.accent,
+    '--secondary': album.secondaryAccent,
+    '--atmosphere': album.atmosphere,
+    '--atmosphere-glow': album.atmosphereGlow,
+    '--surface': album.surface,
+    '--light': album.light,
+    '--shadow-tone': album.shadow,
+    '--text-contrast': album.textContrast,
+  } as CSSProperties
+}
+
 function BackdropAtmosphere({ album }: { album: Album }) {
   return (
     <div
       className="backdrop-atmosphere"
-      style={
-        {
-          '--accent': album.accent,
-          '--secondary': album.secondaryAccent,
-          '--atmosphere': album.atmosphere,
-          '--atmosphere-glow': album.atmosphereGlow,
-          '--surface': album.surface,
-          '--light': album.light,
-          '--shadow-tone': album.shadow,
-          '--text-contrast': album.textContrast,
-        } as CSSProperties
-      }
+      style={albumVisualVars(album)}
     />
   )
 }

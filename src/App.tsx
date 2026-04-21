@@ -51,7 +51,7 @@ function App() {
   }, [])
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <PlayerProvider albums={albums}>
         <Shell albums={albums} />
       </PlayerProvider>

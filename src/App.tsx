@@ -179,7 +179,7 @@ function HeroPoster({ album }: { album: Album }) {
           {
             '--hero-accent': album.accent,
             '--hero-secondary': album.secondaryAccent,
-            '--hero-image': "url('/lux.jpg')",
+            '--hero-image': `url('${import.meta.env.BASE_URL}lux.jpg')`,
           } as CSSProperties
         }
         initial={reduceMotion ? undefined : { opacity: 0, scale: 1.06 }}
